@@ -1,0 +1,48 @@
+<div *ngIf="!opened" class="launcher" (click)="openApp()" role="button" tabindex="0" (keyup.enter)="openApp()">
+  <svg class="launcher-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <rect x="2" y="3" width="20" height="18" rx="2" ry="2" fill="#4CAF50" />
+    <rect x="6" y="7" width="12" height="3" rx="1" ry="1" fill="#fff" />
+    <g fill="#fff">
+      <rect x="6" y="12" width="2" height="2" />
+      <rect x="10" y="12" width="2" height="2" />
+      <rect x="14" y="12" width="2" height="2" />
+      <rect x="6" y="15" width="2" height="2" />
+      <rect x="10" y="15" width="2" height="2" />
+      <rect x="14" y="15" width="2" height="2" />
+    </g>
+  </svg>
+  <div class="launcher-label">Calculator</div>
+</div>
+
+<div *ngIf="opened" class="calculator-root">
+  <div class="calculator-container">
+    <div class="calculator">
+      <div class="display">
+        <div class="expression" *ngIf="previousExpression">{{ previousExpression }}</div>
+        <div class="result">{{ lastActionWasEqual ? result : (currentExpression || '0') }}</div>
+      </div>
+      <div class="buttons">
+    <button (click)="addNumber('7')">7</button>
+    <button (click)="addNumber('8')">8</button>
+    <button (click)="addNumber('9')">9</button>
+    <button (click)="addOperation('/')" class="operator">/</button>
+
+    <button (click)="addNumber('4')">4</button>
+    <button (click)="addNumber('5')">5</button>
+    <button (click)="addNumber('6')">6</button>
+    <button (click)="addOperation('*')" class="operator">*</button>
+
+    <button (click)="addNumber('1')">1</button>
+    <button (click)="addNumber('2')">2</button>
+    <button (click)="addNumber('3')">3</button>
+    <button (click)="addOperation('-')" class="operator">-</button>
+
+    <button (click)="clear()" class="clear">C</button>
+    <button (click)="addNumber('0')">0</button>
+    <button (click)="addNumber('.')">.</button>
+    <button (click)="addOperation('+')" class="operator">+</button>
+
+    <button (click)="calculate()" class="equal" style="grid-column: span 4;">=</button>
+    </div>
+  </div>
+</div>
