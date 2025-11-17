@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -51,6 +51,11 @@ export class App {
   }
 
   calculate() {
+    // Don't calculate if there's no expression or if it ends with an operator
+    if (!this.currentExpression || /[+\-*/]$/.test(this.currentExpression)) {
+      return;
+    }
+
     // Evaluate the expression shown in display.
     // Only allow digits, operators and decimal point to avoid unsafe eval.
     const expr = this.currentExpression.replace(/\s+/g, '');
@@ -94,6 +99,69 @@ export class App {
 
   openApp() {
     this.opened = true;
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    // Only handle keyboard events when calculator is opened
+    if (!this.opened) return;
+
+    // Prevent default behavior for calculator keys
+    if (this.isCalculatorKey(event.key)) {
+      event.preventDefault();
+    }
+
+    switch (event.key) {
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+      case '.':
+        this.addNumber(event.key);
+        break;
+      case '+':
+      case '-':
+      case '*':
+      case '/':
+        this.addOperation(event.key);
+        break;
+      case 'Enter':
+      case '=':
+        if (this.currentExpression && !this.currentExpression.match(/[+\-*/]$/)) {
+          this.calculate();
+        }
+        break;
+      case 'Escape':
+      case 'c':
+      case 'C':
+        this.clear();
+        break;
+      case 'Backspace':
+        this.handleBackspace();
+        break;
+    }
+  }
+
+  private isCalculatorKey(key: string): boolean {
+    return /^[0-9.+\-*/=cC]$/.test(key) || 
+           key === 'Enter' || 
+           key === 'Escape' || 
+           key === 'Backspace';
+  }
+
+  private handleBackspace() {
+    if (!this.lastActionWasEqual) {
+      this.currentExpression = this.currentExpression.slice(0, -1);
+      if (this.currentExpression === '') {
+        this.currentExpression = '0';
+      }
+    }
   }
 }
 
